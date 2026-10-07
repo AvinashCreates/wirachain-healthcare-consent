@@ -1,0 +1,40 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Node
+node_modules/
+.npm/
+.pnpm-store/
+coverage/
+
+# Build artifacts
+dist/
+build/
+out/
+*.log
+
+# .NET
+bin/
+obj/
+*.user
+*.suo
+*.cache
+*.db
+*.db-shm
+*.db-wal
+
+# Docker
+*.env
+!*.env.template
+
+# temporary
+tmp/
+temp/
+
+# lock backups
+*.orig
