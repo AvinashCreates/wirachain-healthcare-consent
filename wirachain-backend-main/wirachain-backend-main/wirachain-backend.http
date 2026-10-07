@@ -1,0 +1,6 @@
+@wirachain_backend_HostAddress = http://localhost:5273
+
+GET {{wirachain_backend_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

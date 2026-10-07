@@ -1,0 +1,39 @@
+{
+  "Version": 1,
+  "Hash": "DP/16IL9RuLSnyseX0QVM5OMvui1or/7ZYdfwN0LgOw=",
+  "Source": "wirachain-backend",
+  "BasePath": "_content/wirachain-backend",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "wirachain-backend\\wwwroot",
+      "Source": "wirachain-backend",
+      "ContentRoot": "D:\\Xenocore\\WiraChain\\wirachain-backend\\wwwroot\\",
+      "BasePath": "_content/wirachain-backend",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [
+    {
+      "Identity": "D:\\Xenocore\\WiraChain\\wirachain-backend\\wwwroot\\swagger-ui\\dark-swagger.css",
+      "SourceId": "wirachain-backend",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\Xenocore\\WiraChain\\wirachain-backend\\wwwroot\\",
+      "BasePath": "_content/wirachain-backend",
+      "RelativePath": "swagger-ui/dark-swagger.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\swagger-ui\\dark-swagger.css"
+    }
+  ]
+}

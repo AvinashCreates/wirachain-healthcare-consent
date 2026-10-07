@@ -1,0 +1,74 @@
+[
+  {
+    "walletAddress": "0x74b7b193F45e7a9164C2939aDAdCE8F0D09803d5",
+    "privateKey": "0x8fcfc18a4bb9212fd9c0811c96f58c4200420fd836f8af03066df130b2baee05",
+    "mnemonicPhrase": "echo tuna hundred split obscure first smoke sniff family isolate develop float",
+    "balanceEth": 5.057484162643193,
+    "balanceWei": "5057484162643193000",
+    "balanceHex": "0x462fcb0cdb82eca8"
+  },
+  {
+    "walletAddress": "0xeC9DFFbad7c44667d7bDdC9188030509cDB50264",
+    "privateKey": "0x734b9ebeb926a4422ecc059dc9a4e69e0b1e7546f71f0124cf75cdb0f6c041b3",
+    "mnemonicPhrase": "few glass fluid sea walk glare bag grid minimum pause super normal",
+    "balanceEth": 4.121148277668992,
+    "balanceWei": "4121148277668992000",
+    "balanceHex": "0x39314286152c5400"
+  },
+  {
+    "walletAddress": "0x554a1D4F5599a695af193041525Cd908E443Cf58",
+    "privateKey": "0xb5e8b705e15be7d148363f6e532ee21c8b97cd2f70162009f655cde820f253e5",
+    "mnemonicPhrase": "size squeeze polar antenna room hour tackle female hood banner surface monster",
+    "balanceEth": 2.813529592983342,
+    "balanceWei": "2813529592983342000",
+    "balanceHex": "0x270baa4212d24bb0"
+  },
+  {
+    "walletAddress": "0x356e21c50c1505b211BeAd58D7E01eBdeB1D9ebA",
+    "privateKey": "0xc8f868b0141eeb6e26226ca7358ee9e085ded58165bc8748d246c15af55e5603",
+    "mnemonicPhrase": "velvet skin left trigger plastic super path census panther hawk fringe above",
+    "balanceEth": 1.8523732492811886,
+    "balanceWei": "1852373249281188600",
+    "balanceHex": "0x19b4f3a7ead762f8"
+  },
+  {
+    "walletAddress": "0xa3886A18E881D239586f5Bf3433B9f007A0Ec22a",
+    "privateKey": "0x28df0f55a28e8074fa76d3d9a1b35b5d55827fbd32057371e466207d49a5ed6c",
+    "mnemonicPhrase": "win blade drastic actor pass sadness arctic twist side fish water smooth",
+    "balanceEth": 7.620107691297117,
+    "balanceWei": "7620107691297117000",
+    "balanceHex": "0x69c00f9279fc9348"
+  },
+  {
+    "walletAddress": "0x59a53811bB86dE899bD97390A76171d444476394",
+    "privateKey": "0x07b4c29c6179610534db05c0213ec3b88d6544aed9269a8fdd8f09a2f40110df",
+    "mnemonicPhrase": "convince season sunset unfair dentist gather rough patrol display original donate final",
+    "balanceEth": 3.995770988738343,
+    "balanceWei": "3995770988738343000",
+    "balanceHex": "0x3773d48b338f7058"
+  },
+  {
+    "walletAddress": "0x76CEb90Dd6245eD95e3C5e6DB0495367D00B774a",
+    "privateKey": "0xb71cfbbdfec819ce2e823f37bb98527131ca129893afda8a911d7d0c9627bcd5",
+    "mnemonicPhrase": "gaze spell wash short material lamp soccer comic nose eager chimney owner",
+    "balanceEth": 7.843540613717662,
+    "balanceWei": "7843540613717662000",
+    "balanceHex": "0x6cd9daa19dfd9930"
+  },
+  {
+    "walletAddress": "0x374f027C22BfE174c280554EF8EA8A2003F8F9c0",
+    "privateKey": "0x0ca3c8180715e5700121a140f72b68ac51f1270e67e349397b8ffcd1384af4b8",
+    "mnemonicPhrase": "club add truly harvest convince lounge tiger text view price rely pave",
+    "balanceEth": 7.698686295079248,
+    "balanceWei": "7698686295079248000",
+    "balanceHex": "0x6ad73a655f5de080"
+  },
+  {
+    "walletAddress": "0xb657F3094B5E7e44CdD37A6A9f7e2a86F619692d",
+    "privateKey": "0xd6ee50448a5fa93b33fa639a14801307611acb8cc377665225bcc048297cfac1",
+    "mnemonicPhrase": "oxygen cotton narrow fame raw goat toy annual month bless era tourist",
+    "balanceEth": 5.514423831650587,
+    "balanceWei": "5514423831650587000",
+    "balanceHex": "0x4c872b421a7b5178"
+  }
+]

@@ -1,0 +1,25 @@
+{
+  "Files": [
+    {
+      "Id": "D:\\Xenocore\\WiraChain\\wirachain-backend\\wwwroot\\swagger-ui\\dark-swagger.css",
+      "PackagePath": "staticwebassets\\swagger-ui\\dark-swagger.css"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.build.wirachain-backend.props",
+      "PackagePath": "build\\wirachain-backend.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildMultiTargeting.wirachain-backend.props",
+      "PackagePath": "buildMultiTargeting\\wirachain-backend.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildTransitive.wirachain-backend.props",
+      "PackagePath": "buildTransitive\\wirachain-backend.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.wirachain-backend.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

@@ -1,0 +1,19 @@
+1,AppointmentRegister,"Manages appointment creation, scheduling, and rebooking."
+2,PatientManager,"Manages patient demographic/admin data (contact, insurance, etc)."
+3,PrescriptionApprover,Validates and approves medical prescriptions before delivery.
+4,MedicalNoteWriter,"Writes and edits medical notes, diagnoses, and evolution entries."
+5,ClinicalViewer,"Read-only access to medical records (auditors, assistants)."
+6,PharmacyManager,"Manages pharmacy inventory, dispenses medications."
+7,BillingManager,"Handles invoices, payments, refunds, and insurance claims."
+8,UserAdmin,"Creates and manages internal users (staff, doctors)."
+9,InteroperabilityManager,"Handles FHIR communication, blockchain syncing."
+10,TraceabilityAuditor,"Views access logs, digital signatures, IPFS hashes, blockchain records."
+11,SelfCareAccess,"View own medical history, labs, prescriptions."
+12,AppointmentRequester,Request and manage appointments.
+13,ConsentManager,Sign or revoke digital consent forms.
+14,TraceabilityViewer,View when and who accessed their records.
+15,ProfileEditor,"Edit own contact info, address, insurance."
+16,DocumentDownloader,"Download PDFs (lab results, prescriptions, invoices)."
+17,ProxyAuthorizer,Assign access to trusted third parties (e.g. caregivers).
+18,BlockchainProofViewer,View blockchain proof of their medical events.
+100,SystemAdminGod,"Unrestricted access to all system operations, including platform-level management, user control, security, and audit logs."

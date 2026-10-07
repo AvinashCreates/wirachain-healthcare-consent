@@ -1,0 +1,37 @@
+services:
+  wirachain-database:
+    image: mysql:8.0
+    container_name: wirachain-database
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  wirachain-backend:
+    build: ../wirachain-backend-main/wirachain-backend-main
+    container_name: wirachain-backend
+    restart: always
+    depends_on:
+      - wirachain-database
+    environment:
+      - ConnectionStrings__WiraChainDbConnection=server=${DATABASE_HOST};port=3306;user=${DATABASE_USER};password=${DATABASE_PASSWORD};database=${DATABASE_NAME}
+    ports:
+      - "${BACKEND_PORT}:8080"
+
+  wirachain-frontend:
+    build: ../wirachain-frontend-main/wirachain-frontend-main
+    container_name: wirachain-frontend
+    restart: always
+    depends_on:
+      - wirachain-backend
+    ports:
+      - "${FRONTEND_PORT}:80"
+
+volumes:
+  mysql_data:
