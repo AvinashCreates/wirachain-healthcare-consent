@@ -14,7 +14,7 @@
     "start": "vite",
     "test": "vitest --run",
     "coverage": "vitest run --coverage",
-    "type-check": "tsc -b --noEmit"
+    "type-check": "tsc -p tsconfig.app.json --noEmit && tsc -p tsconfig.node.json --noEmit"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.6.1",

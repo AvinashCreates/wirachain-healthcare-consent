@@ -5,20 +5,25 @@ import * as Redux from "../../src/redux"
 
 // Mock the MultiSelect component
 vi.mock("primereact/multiselect", () => ({
-  MultiSelect: vi.fn(({ options, virtualScrollerOptions, ...props }) => (
-    <div data-testid="mock-multiselect">
-      <select {...props}>
-        {options?.map((option, index) => (
-          <option key={index} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
-      <div data-testid="mock-virtual-scroller">
-        {virtualScrollerOptions?.loading ? "Loading..." : ""}
+  MultiSelect: vi.fn(({ options, virtualScrollerOptions, ...props }) => {
+    const selectProps = { ...props }
+    delete selectProps.onFilter
+
+    return (
+      <div data-testid="mock-multiselect">
+        <select {...selectProps}>
+          {options?.map((option, index) => (
+            <option key={index} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+        <div data-testid="mock-virtual-scroller">
+          {virtualScrollerOptions?.loading ? "Loading..." : ""}
+        </div>
       </div>
-    </div>
-  )),
+    )
+  }),
 }))
 
 // Mock Redux functions

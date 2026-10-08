@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Xenocore\\WiraChain\\wirachain-backend\\wirachain-backend.csproj": {}
+    "/home/pamarthi-avinash/Documents/Folder/wirachain-backend-main/wirachain-backend-main/wirachain-backend.csproj": {}
   },
   "projects": {
-    "D:\\Xenocore\\WiraChain\\wirachain-backend\\wirachain-backend.csproj": {
+    "/home/pamarthi-avinash/Documents/Folder/wirachain-backend-main/wirachain-backend-main/wirachain-backend.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Xenocore\\WiraChain\\wirachain-backend\\wirachain-backend.csproj",
+        "projectUniqueName": "/home/pamarthi-avinash/Documents/Folder/wirachain-backend-main/wirachain-backend-main/wirachain-backend.csproj",
         "projectName": "wirachain-backend",
-        "projectPath": "D:\\Xenocore\\WiraChain\\wirachain-backend\\wirachain-backend.csproj",
-        "packagesPath": "C:\\Users\\leona\\.nuget\\packages\\",
-        "outputPath": "D:\\Xenocore\\WiraChain\\wirachain-backend\\obj\\",
+        "projectPath": "/home/pamarthi-avinash/Documents/Folder/wirachain-backend-main/wirachain-backend-main/wirachain-backend.csproj",
+        "packagesPath": "/home/pamarthi-avinash/.nuget/packages/",
+        "outputPath": "/home/pamarthi-avinash/Documents/Folder/wirachain-backend-main/wirachain-backend-main/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\leona\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "/home/pamarthi-avinash/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -32,11 +32,6 @@
           "warnAsError": [
             "NU1605"
           ]
-        },
-        "restoreAuditProperties": {
-          "enableAudit": "true",
-          "auditLevel": "low",
-          "auditMode": "direct"
         }
       },
       "frameworks": {
@@ -133,7 +128,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.407/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.131/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

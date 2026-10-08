@@ -19,7 +19,7 @@ function MultiSelectSpeciality(props: MultiSelectProps) {
   })
 
   useEffect(() => {
-    if (data?.results) {
+    if (data?.results && !isFetching) {
       if (data.results.length === 0 || data.results.length < 10) {
         setHasMoreData(false)
       }
@@ -58,6 +58,13 @@ function MultiSelectSpeciality(props: MultiSelectProps) {
         loading: loadingSpeciality,
         onLazyLoad: onLazyLoad,
         step: 10,
+      }}
+      onFilter={event => {
+        setSearch(event.filter)
+        setPage(1)
+        setSpecialityData([])
+        setHasMoreData(true)
+        props.onFilter?.(event)
       }}
     />
   )

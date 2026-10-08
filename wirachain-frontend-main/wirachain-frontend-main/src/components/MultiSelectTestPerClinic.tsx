@@ -11,6 +11,7 @@ function MultiSelectTestPerClinic(props: MultiSelectProps) {
   return (
     <MultiSelect
       {...props}
+      loading={isLoadingClinic}
       options={clinicData?.medicalTests.map(speciality => ({
         label: speciality.name,
         value: speciality.id,

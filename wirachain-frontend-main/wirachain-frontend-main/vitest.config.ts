@@ -4,7 +4,11 @@ import { defineConfig } from "vite"
 export default defineConfig({
   test: {
     environment: "jsdom",
+    environmentOptions: {
+      jsdom: { url: "http://localhost" },
+    },
     globals: true,
+    setupFiles: ["./test/setup.tsx"],
     deps: { inline: ["msw"] },
     coverage: {
       provider: "istanbul",

@@ -1,15 +1,29 @@
-import { setupServer } from "msw/node"
-import { afterAll, afterEach, beforeAll } from "vitest"
-import { handlers } from "./mocks/handlers"
+import { transferableAbortController } from "node:util"
 
-export const server = setupServer(...handlers)
+const nativeAbortController = transferableAbortController()
 
-beforeAll(() => {
-  server.listen({ onUnhandledRequest: "error" })
+Object.defineProperty(globalThis, "AbortController", {
+  configurable: true,
+  value: nativeAbortController.constructor,
 })
-afterEach(() => {
-  server.resetHandlers()
+Object.defineProperty(globalThis, "AbortSignal", {
+  configurable: true,
+  value: Object.getPrototypeOf(nativeAbortController.signal).constructor,
 })
-afterAll(() => {
-  server.close()
+
+const storage = new Map<string, string>()
+const testLocalStorage: Storage = {
+  get length() {
+    return storage.size
+  },
+  clear: () => storage.clear(),
+  getItem: key => storage.get(key) ?? null,
+  key: index => Array.from(storage.keys())[index] ?? null,
+  removeItem: key => storage.delete(key),
+  setItem: (key, value) => storage.set(key, String(value)),
+}
+
+Object.defineProperty(globalThis, "localStorage", {
+  configurable: true,
+  value: testLocalStorage,
 })
