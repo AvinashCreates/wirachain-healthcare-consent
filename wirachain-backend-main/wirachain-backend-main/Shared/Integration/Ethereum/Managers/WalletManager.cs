@@ -18,12 +18,16 @@ public class WalletManager : IWalletManager
 
     public Task<Account> GetAccountAsync(string address)
     {
-        throw new NotImplementedException();
+        var account = _accounts.FirstOrDefault(x => x.Address.Equals(address, StringComparison.OrdinalIgnoreCase));
+        if (account is null)
+            throw new KeyNotFoundException($"Account with address {address} not found");
+
+        return Task.FromResult(account);
     }
 
     public Account GetAccountByAddress(string address)
     {
-        return _accounts.FirstOrDefault(x => x.Address == address) ??
+        return _accounts.FirstOrDefault(x => x.Address.Equals(address, StringComparison.OrdinalIgnoreCase)) ??
                throw new KeyNotFoundException($"Account with address {address} not found");
     }
     
@@ -39,7 +43,7 @@ public class WalletManager : IWalletManager
 
     public Task<int> CountAccountsAsync()
     {
-        throw new NotImplementedException();
+        return Task.FromResult(_accounts.Count);
     }
 
     public int CountAccounts()

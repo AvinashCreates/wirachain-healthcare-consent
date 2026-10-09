@@ -1,5 +1,6 @@
 import type { RouteObject } from "react-router"
 import {
+  ConsentManagement,
   DetailAppointment,
   ListAppointment,
   ListClinic,
@@ -23,6 +24,10 @@ const PatientRouter: RouteObject[] = [
   {
     path: "patient/clinic-list",
     element: <ListClinic />,
+  },
+  {
+    path: "patient/consent-management",
+    element: <ConsentManagement />,
   },
   {
     path: "patient/profile",

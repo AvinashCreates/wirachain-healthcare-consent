@@ -20,6 +20,7 @@ public class AppDbContext : DbContext
     public DbSet<Doctor> Doctors { get; set; }
     public DbSet<Patient> Patients { get; set; }
     public DbSet<PatientClinicPermission> PatientClinicPermissions { get; set; }
+    public DbSet<PatientConsent> PatientConsents { get; set; }
     public DbSet<MedicalTest> MedicalTests { get; set; }
     public DbSet<MedicalSpecialty> MedicalSpecialties { get; set; }
     public DbSet<DoctorMedicalSpecialty> DoctorMedicalSpecialties { get; set; }
@@ -51,6 +52,30 @@ public class AppDbContext : DbContext
             .SetMedicalSpecialtyRelations()
             .SetMedicalConsultationTableAttributes()
             .SetMedicalConsultationRelations();
+
+        modelBuilder.Entity<PatientConsent>(entity =>
+        {
+            entity.ToTable("patient_consents");
+            entity.HasKey(consent => consent.Id);
+            entity.Property(consent => consent.Purpose).HasMaxLength(255).IsRequired();
+            entity.Property(consent => consent.ResourceScopesJson).HasColumnType("longtext").IsRequired();
+            entity.Property(consent => consent.GrantedAtUtc).HasColumnType("datetime(6)");
+            entity.Property(consent => consent.ExpiresAtUtc).HasColumnType("datetime(6)");
+            entity.Property(consent => consent.RevokedAtUtc).HasColumnType("datetime(6)");
+            entity.Property(consent => consent.FhirConsentId).HasMaxLength(64);
+            entity.Property(consent => consent.BlockchainTransactionHash).HasMaxLength(128);
+            entity.HasOne(consent => consent.Patient)
+                .WithMany()
+                .HasForeignKey(consent => consent.PatientId)
+                .OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne(consent => consent.Doctor)
+                .WithMany()
+                .HasForeignKey(consent => consent.DoctorId)
+                .OnDelete(DeleteBehavior.Restrict);
+            entity.HasIndex(consent => consent.PatientId);
+            entity.HasIndex(consent => consent.DoctorId);
+            entity.HasIndex(consent => consent.ExpiresAtUtc);
+        });
         
         // Seeding
         modelBuilder

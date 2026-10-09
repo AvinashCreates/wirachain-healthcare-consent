@@ -64,6 +64,12 @@ public class ClinicRepository(AppDbContext context) : BaseRepository<Clinic, lon
             IsRequired = clinic.PatientClinicsPermissions.Any(c => c.PatientId == patientId && c.IsRequired),
             IsActive = clinic.PatientClinicsPermissions.Any(c => c.PatientId == patientId && c.IsActive),
         }).AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(searchTerm))
+        {
+            query = query.Where(clinic =>
+                clinic.Name.Contains(searchTerm) || clinic.Ruc.Contains(searchTerm));
+        }
         
         var totalCount = await query.CountAsync();
         

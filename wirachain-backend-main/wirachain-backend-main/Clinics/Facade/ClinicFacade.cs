@@ -20,7 +20,14 @@ public class ClinicFacade(
 {
     public void UpdateClinicFromCommand(Clinic clinic, UpdateClinicCommand command)
     {
-        throw new NotImplementedException();
+        if (!string.IsNullOrWhiteSpace(command.Name))
+            clinic.Name = command.Name;
+
+        if (!string.IsNullOrWhiteSpace(command.Address))
+            clinic.Address = command.Address;
+
+        if (!string.IsNullOrWhiteSpace(command.Ruc))
+            clinic.Ruc = command.Ruc;
     }
 
     public Clinic BuildClinicFromCommand(CreateClinicCommand clinic)

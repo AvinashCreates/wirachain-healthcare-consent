@@ -28,12 +28,12 @@ public class GrantPermissionEventEmitter : IEventEmitter<PermissionRequest>
         _walletManager = walletManager;
     }
 
-    public async Task EmitEventAsync(int signerIndex, PermissionRequest request)
+    public async Task<string> EmitEventAsync(int signerIndex, PermissionRequest request)
     {
         HttpResponseMessage response = await _httpClient.GetAsync($"{_settings.SmartContractManagerUrl}/contract/1");
         response.EnsureSuccessStatusCode();
 
-        var account = new Account("0x8fcfc18a4bb9212fd9c0811c96f58c4200420fd836f8af03066df130b2baee05");
+        var account = _walletManager.GetAccountByIndex(signerIndex);
         var web3 = new Web3(account, _settings.RpcUrl);
 
         var responseString = await response.Content.ReadAsStringAsync();
@@ -44,27 +44,29 @@ public class GrantPermissionEventEmitter : IEventEmitter<PermissionRequest>
                 PropertyNameCaseInsensitive = true
             });
 
-        var contract = web3.Eth.GetContract(contractData?.Abi, contractData?.Address);
-        Console.WriteLine($"Contract Address: {contractData?.Address}");
-        Console.WriteLine($"Contract ABI: {contractData?.Abi}");
-        // Get Function from Contract
-        Function function = contract.GetFunction("grantPatientPermission");
+        if (contractData is null || string.IsNullOrWhiteSpace(contractData.Address) || contractData.Abi is null)
+        {
+            throw new InvalidOperationException("Smart contract metadata is missing or invalid for permission events.");
+        }
 
-        // Transform GUID to String
+        var contract = web3.Eth.GetContract(contractData.Abi, contractData.Address);
+        Console.WriteLine($"Contract Address: {contractData.Address}");
+        Console.WriteLine($"Contract ABI: {contractData.Abi}");
+
+        Function function = contract.GetFunction("grantPatientPermission");
         string patientGuidString = request.PatientId.ToString();
 
-        // Estimate Gas
         var gasEstimate = await function.EstimateGasAsync(
             from: account.Address, gas: null, value: null,
             functionInput: [patientGuidString, request.ClinicId]);
 
-        // Send transaction
         var txHash = await function.SendTransactionAsync(from: account.Address, gas: gasEstimate, value: null,
             functionInput: [patientGuidString, request.ClinicId]);
 
         Console.WriteLine($"Sent Transaction: {txHash}");
+        return txHash;
     }
 
-    public async Task EmitEventAsync(int signerIndex, object request) =>
-        await EmitEventAsync(signerIndex, (PermissionRequest)request);
+    public Task<string> EmitEventAsync(int signerIndex, object request) =>
+        EmitEventAsync(signerIndex, (PermissionRequest)request);
 }

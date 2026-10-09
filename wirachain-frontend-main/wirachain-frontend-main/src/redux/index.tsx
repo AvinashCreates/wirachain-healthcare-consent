@@ -4,6 +4,7 @@ import { authApi } from "./api/AuthAPI"
 import { clinicApi } from "./api/ClinicAPI"
 import { clinicAdminApi } from "./api/ClinicAdminAPI"
 import { clinicPatientApi } from "./api/ClinicPatientAPI"
+import { consentApi } from "./api/ConsentAPI"
 import { doctorApi } from "./api/DoctorAPI"
 import { medicalConsultationApi } from "./api/MedicalConsultationAPI"
 import { patientApi } from "./api/PatientAPI"
@@ -27,6 +28,7 @@ export const store = configureStore({
     [clinicPatientApi.reducerPath]: clinicPatientApi.reducer,
     [medicalConsultationApi.reducerPath]: medicalConsultationApi.reducer,
     [patientApi.reducerPath]: patientApi.reducer,
+    [consentApi.reducerPath]: consentApi.reducer,
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware()
@@ -38,7 +40,8 @@ export const store = configureStore({
       .concat(patientApi.middleware)
       .concat(clinicPatientApi.middleware)
       .concat(authApi.middleware)
-      .concat(medicalConsultationApi.middleware),
+      .concat(medicalConsultationApi.middleware)
+      .concat(consentApi.middleware),
 })
 
 export type RootState = ReturnType<typeof store.getState>
@@ -67,6 +70,11 @@ export {
   useGetAllClinicsPerPatientQuery,
   useRemoveClinicPatientMutation,
 } from "./api/ClinicPatientAPI"
+export {
+  useGetMyConsentsQuery,
+  useGrantConsentMutation,
+  useRevokeConsentMutation,
+} from "./api/ConsentAPI"
 export {
   useAddDoctorMutation,
   useDeleteDoctorMutation,

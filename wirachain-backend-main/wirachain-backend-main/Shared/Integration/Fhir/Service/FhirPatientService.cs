@@ -1,3 +1,4 @@
+using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Mime;
 using Hl7.Fhir.Model;
@@ -38,14 +39,32 @@ public class FhirPatientService : IFhirPatientService
         return _fhirJsonParser.Parse<Patient>(jsonResponse);
     }
 
-    public Task<Patient?> FindAsync(string fhirId)
+    public async Task<Patient?> FindAsync(string fhirId)
     {
-        throw new NotImplementedException();
+        var response = await _httpClient.GetAsync($"{_settings.BaseUrl}/Patient/{Uri.EscapeDataString(fhirId)}");
+        if (response.StatusCode == HttpStatusCode.NotFound)
+            return null;
+
+        response.EnsureSuccessStatusCode();
+
+        var jsonResponse = await response.Content.ReadAsStringAsync();
+        return _fhirJsonParser.Parse<Patient>(jsonResponse);
     }
 
-    public Task<IEnumerable<Patient>> FindByIdentifierAsync(string system, string value)
+    public async Task<IEnumerable<Patient>> FindByIdentifierAsync(string system, string value)
     {
-        throw new NotImplementedException();
+        var query = Uri.EscapeDataString(system) + "|" + Uri.EscapeDataString(value);
+        var response = await _httpClient.GetAsync($"{_settings.BaseUrl}/Patient?identifier={query}");
+        response.EnsureSuccessStatusCode();
+
+        var jsonResponse = await response.Content.ReadAsStringAsync();
+        var bundle = _fhirJsonParser.Parse<Bundle>(jsonResponse);
+
+        return bundle.Entry?
+            .Select(entry => entry.Resource as Patient)
+            .Where(patient => patient is not null)
+            .Cast<Patient>()
+            ?? Enumerable.Empty<Patient>();
     }
 
     public async Task<Patient> UpdateAsync(string fhirId, Patient patient)

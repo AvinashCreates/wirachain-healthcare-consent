@@ -1,5 +1,7 @@
 using System.Net.Mime;
+using System.Security.Claims;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using wirachain_backend.Patients.Application.Commands.Create;
@@ -10,6 +12,8 @@ using wirachain_backend.Patients.Application.Resources.Basic;
 using wirachain_backend.Patients.Application.Resources.Show;
 using wirachain_backend.Patients.Domain.Models;
 using wirachain_backend.Patients.Domain.Services;
+using wirachain_backend.Permissions.Domain.Services;
+using wirachain_backend.Shared.Domain.Enumerations;
 using wirachain_backend.Shared.Domain.Services.Communication;
 
 namespace wirachain_backend.Patients.Controllers.Rest;
@@ -18,7 +22,10 @@ namespace wirachain_backend.Patients.Controllers.Rest;
 [Route("api/v0/[controller]")]
 [Produces(MediaTypeNames.Application.Json)]
 [SwaggerTag("Patients Controller 🚀")]
-public class PatientsController(IPatientService patientService, IMapper mapper) : ControllerBase
+public class PatientsController(
+    IPatientService patientService,
+    IPatientConsentService consentService,
+    IMapper mapper) : ControllerBase
 {
     [HttpGet("page")]
     public async Task<IActionResult> PagePatientBySearchTermAsync([FromQuery] int pageIndex, [FromQuery] int pageSize,
@@ -29,10 +36,30 @@ public class PatientsController(IPatientService patientService, IMapper mapper) 
     }
 
     [HttpGet("{patientId}")]
+    [Authorize]
     public async Task<IActionResult> GetPatientByIdAsync(Guid patientId)
     {
+        if (!Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var requesterId))
+        {
+            return Unauthorized();
+        }
+
+        var isPatientOwner = requesterId == patientId && IsUserType(UserType.Patient);
+        var isConsentedDoctor = IsUserType(UserType.Doctor)
+            && await consentService.IsAuthorizedAsync(patientId, requesterId, "Patient");
+        if (!isPatientOwner && !isConsentedDoctor)
+        {
+            return Forbid();
+        }
+
         var result = await patientService.FindAsync(patientId);
         return Ok(mapper.Map<PatientResource>(result.Data));
+    }
+
+    private bool IsUserType(UserType userType)
+    {
+        return int.TryParse(User.FindFirstValue("userType"), out var value)
+            && value == (int)userType + 1;
     }
 
     [SwaggerOperation(Description = "Get pageable patients from a clinic.",

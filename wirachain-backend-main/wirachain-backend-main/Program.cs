@@ -169,6 +169,8 @@ builder.Services.AddScoped<IPatientFacade, PatientFacade>();
 builder.Services.AddScoped<IPatientClinicPermissionRepository, PatientClinicPermissionRepository>();
 builder.Services.AddScoped<IBaseRepository<PatientClinicPermission, Guid>, PatientClinicPermissionRepository>();
 builder.Services.AddScoped<IPatientClinicPermissionService, PatientClinicPermissionService>();
+builder.Services.AddScoped<IPatientConsentRepository, PatientConsentRepository>();
+builder.Services.AddScoped<IPatientConsentService, PatientConsentService>();
 // -- MedicalTest
 builder.Services.AddScoped<IMedicalTestRepository, MedicalTestRepository>();
 builder.Services.AddScoped<IBaseRepository<MedicalTest, long>, MedicalTestRepository>();
@@ -194,6 +196,7 @@ builder.Services.AddScoped<IConsultationMedicalTestRepository, ConsultationMedic
 builder.Services.AddScoped<IEthereumService, EthereumService>();
 // -- FHIR Patient Service
 builder.Services.AddScoped<IFhirPatientService, FhirPatientService>();
+builder.Services.AddScoped<IFhirConsentService, FhirConsentService>();
 
 
 // JwtService
@@ -268,6 +271,7 @@ using (var context = scope.ServiceProvider.GetRequiredService<AppDbContext>())
 {
     Console.WriteLine("Development");
     context.Database.EnsureCreated();
+    context.Database.Migrate();
 }
 
 app.UseAuthentication(); // Validating JWT
