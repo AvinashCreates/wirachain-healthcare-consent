@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("wirachain-backend")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+73b787dc38f7f5bf76d52fb06ebb6a307331f5cc")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6ce290e50f23cf0f0cac6ad9f7d65b7b094a3df4")]
 [assembly: System.Reflection.AssemblyProductAttribute("wirachain-backend")]
 [assembly: System.Reflection.AssemblyTitleAttribute("wirachain-backend")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

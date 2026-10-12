@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="../build/wirachain-backend.props" />
-</Project>

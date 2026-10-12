@@ -10,7 +10,7 @@ import {
   useGetMyConsentsQuery,
   useGrantConsentMutation,
   useRevokeConsentMutation,
-} from "../../../redux"
+} from "../../../../redux"
 
 const RESOURCE_OPTIONS = [
   "Patient",
