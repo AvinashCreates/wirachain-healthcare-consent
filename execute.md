@@ -1,6 +1,6 @@
-# Execute Guide for the WiraChain Project
+# WiraChain Execute Guide: Arch Linux
 
-This guide explains how to run the project on both Windows and Arch Linux using the current repository structure.
+This guide covers the current local development setup on Arch Linux: MySQL and HAPI FHIR in Docker, with the .NET backend and Vite frontend running on the host.
 
 ---
 
@@ -17,221 +17,157 @@ The workspace contains the following main folders:
 
 ## 2. Prerequisites
 
-### Windows
-Install:
-- .NET 8 SDK
-- Node.js LTS
-- Docker Desktop with WSL2 enabled
-- Git
-
 ### Arch Linux
 Install:
-- .NET SDK
+- .NET 8 SDK
 - Node.js and npm
 - Docker and Docker Compose
-- MySQL only if you are not using Docker
+- curl
 
 Example package installation:
 
 ```bash
 sudo pacman -Syu
-sudo pacman -S dotnet-sdk nodejs npm docker docker-compose
-sudo systemctl enable docker
-sudo systemctl start docker
+sudo pacman -S --needed dotnet-sdk nodejs npm docker docker-compose curl
+sudo systemctl enable --now docker
+```
+
+Add your user to the Docker group if needed, then log out and back in for the group change to take effect:
+
+```bash
+sudo usermod -aG docker "$USER"
 ```
 
 ---
 
-## 3. Recommended setup: run with Docker Compose
+## 3. Start MySQL
 
-This is the easiest and most reliable method.
-
-### Windows
-Open PowerShell in the docker folder:
-
-```powershell
-cd wirachain-docker-main\wirachain-docker-main
-docker compose up -d --build
-```
-
-### Arch Linux
-Open terminal:
+The current verified local workflow runs MySQL in Docker and the backend/frontend directly on Arch Linux.
 
 ```bash
-cd /home/YOUR_USER/Documents/Folder/wirachain-docker-main/wirachain-docker-main
-docker compose up -d --build
+export ROOT="$HOME/Documents/Folder"
+cd "$ROOT/wirachain-docker-main/wirachain-docker-main"
+if [[ ! -f .env ]]; then cp .env.template .env; fi
+docker compose up -d wirachain-database
+docker compose ps
 ```
 
-After startup, check:
-
-- Backend Swagger: http://localhost:5273/swagger
-- Frontend: http://localhost:3000
-
-The Docker config is defined in:
-
-- `wirachain-docker-main/wirachain-docker-main/docker-compose.yml`
-- `wirachain-docker-main/wirachain-docker-main/.env`
+MySQL is published at `127.0.0.1:3307`. Data is stored in the `mysql_data` Docker volume. Do not run `docker compose down -v` unless you intend to delete that database volume.
 
 ---
 
 ## 4. Run each project manually
 
-### 4.1 Backend
+### 4.1 HAPI FHIR
 
-#### Windows
-```powershell
-cd wirachain-backend-main\wirachain-backend-main
-dotnet restore
-dotnet run --urls http://localhost:5273
-```
+The backend uses `http://localhost:8080/fhir`. If the named container already exists, start it:
 
-#### Arch Linux
 ```bash
-cd /home/YOUR_USER/Documents/Folder/wirachain-backend-main/wirachain-backend-main
-dotnet restore
-dotnet run --urls http://localhost:5273
+docker start wirachain-fhir
 ```
 
-The backend uses the connection string from:
+For first-time setup, create it instead:
 
-- `wirachain-backend-main/wirachain-backend-main/appsettings.json`
+```bash
+docker run -d --name wirachain-fhir --restart unless-stopped -p 8080:8080 hapiproject/hapi:latest
+```
 
-If MySQL is not running, the backend will fail at startup.
+Wait for HAPI to finish startup, then check FHIR R4 metadata:
+
+```bash
+curl -fsS -H 'Accept: application/fhir+json' http://localhost:8080/fhir/metadata | head -c 200
+```
+
+The default HAPI image uses in-memory H2. Its test resources may be lost if the container is removed or restarted.
 
 ---
 
-### 4.2 Frontend
+### 4.2 Backend
 
-#### Windows
-```powershell
-cd wirachain-frontend-main\wirachain-frontend-main
-npm install
-npm run dev -- --host 0.0.0.0 --port 3000
-```
-
-#### Arch Linux
 ```bash
-cd /home/YOUR_USER/Documents/Folder/wirachain-frontend-main/wirachain-frontend-main
-npm install
-npm run dev -- --host 0.0.0.0 --port 3000
+export ROOT="$HOME/Documents/Folder"
+cd "$ROOT/wirachain-backend-main/wirachain-backend-main"
+set -a
+source "$ROOT/wirachain-docker-main/wirachain-docker-main/.env"
+set +a
+export ConnectionStrings__WiraChainDbConnection="server=127.0.0.1;port=3307;user=${DATABASE_USER};password=${DATABASE_PASSWORD};database=${DATABASE_NAME}"
+dotnet build --nologo
+dotnet run --launch-profile http
 ```
 
-Then open the browser at:
+The backend connects to the Docker-published MySQL port `3307`. It also requires HAPI FHIR on `http://localhost:8080/fhir` for patient and consent workflows. Swagger is at `http://localhost:5273/swagger`.
 
-- http://localhost:3000
+If MySQL or HAPI is unavailable, dependent backend operations will fail.
 
 ---
 
-### 4.3 Smart contract / ABI service
+### 4.3 Frontend
+
+```bash
+cd "$HOME/Documents/Folder/wirachain-frontend-main/wirachain-frontend-main"
+npm ci
+npm run type-check
+npm test
+npm run dev -- --host 0.0.0.0
+```
+
+Vite prints the frontend URL, normally `http://localhost:5173`. The development API URL is read from `.env.development` and points to `http://localhost:5273/api/v0/`.
+
+
+---
+
+### 4.4 Optional smart contract / ABI service
 
 This service is separate and supports the blockchain permission event layer.
 
-#### Windows
-```powershell
-cd wirachain-smart-contract-deployment-main\wirachain-smart-contract-deployment-main
-npm install
+```bash
+cd "$HOME/Documents/Folder/wirachain-smart-contract-deployment-main/wirachain-smart-contract-deployment-main"
+npm ci
 npm run dev
 ```
 
-#### Arch Linux
+This optional service uses port `3000` by default. Consent blockchain events additionally require an Ethereum JSON-RPC node at `localhost:8545` and a contract metadata service at the URL configured in `appsettings.json`; these are not started by the current Compose file.
+
+---
+
+## 5. Database notes
+
+- The Compose `.env` file provides the MySQL credentials used by the backend command above.
+- MySQL is exposed to the host on port `3307`; the backend must use that port when running outside Docker.
+- The backend runs `EnsureCreated()` and applies an additive consent migration at startup. It no longer deletes the database, but back up data before schema changes because the project does not yet have a complete migration history.
+- Never run `docker compose down -v` unless you intentionally want to erase the MySQL volume.
+
+---
+
+## 6. Common troubleshooting
+
+### Backend cannot connect to MySQL
+
+Confirm that the database container is running with `docker compose ps`, then confirm the host connection uses port `3307` and the same credentials as the Docker `.env` file.
+
+### Frontend cannot reach backend
+
+Confirm the backend is listening on port `5273` and that `.env.development` contains the matching Vite API base URL.
+
+### HAPI reports connection refused
+
+Confirm the HAPI container is running and wait for startup to finish before creating patients or consent records.
+
+### Docker Buildx requests filesystem permission
+
+The Compose build contexts point to sibling folders. From the Docker project directory, allow Buildx to read the parent folder, build images, then start Compose:
+
 ```bash
-cd /home/YOUR_USER/Documents/Folder/wirachain-smart-contract-deployment-main/wirachain-smart-contract-deployment-main
-npm install
-npm run dev
+cd "$HOME/Documents/Folder/wirachain-docker-main/wirachain-docker-main"
+docker buildx bake --file docker-compose.yml --allow=fs.read=.. --load
+docker compose up -d
 ```
 
-This project exposes the ABI/contract-related API used by the backend event emitter logic.
+This only resolves build-context access. Current Compose does not include HAPI FHIR, and the backend container must use a Compose service hostname instead of `localhost` for FHIR. The verified development path is to keep backend/frontend on the host and MySQL/HAPI in containers.
 
----
+## 7. Security and deployment notes
 
-## 5. MySQL / database note
-
-The backend and Docker setup expect MySQL to be available before backend startup.
-
-In Docker, this is handled automatically by the compose file.
-
-If using a local MySQL instance, confirm the DB is running and that the connection string matches the database name, user, and password.
-
----
-
-## 6. Demo credentials
-
-The backend includes seeded demo users for testing.
-
-### Doctor
-- Email: `paul.jones@gmail.com`
-- Password: `1234`
-
-### Clinic Admin
-- Email: `john.doe@gmail.com`
-- Password: `1234`
-
-### Another Clinic Admin
-- Email: `leonardo.grau@gmail.com`
-- Password: `1234`
-
-### System Admin
-- Email: `joao.urrunaga@gmail.com`
-- Password: `5678`
-
-These are defined in the seed files under:
-
-- `wirachain-backend-main/wirachain-backend-main/Shared/Persistence/Seeding/DoctorSeeding.cs`
-- `wirachain-backend-main/wirachain-backend-main/Shared/Persistence/Seeding/ClinicAdministratorsSeeding.cs`
-- `wirachain-backend-main/wirachain-backend-main/Shared/Persistence/Seeding/SystemAdministratorSeeding.cs`
-
----
-
-## 7. Common troubleshooting
-
-### 1. Backend fails because MySQL is not running
-Solution:
-- start Docker compose, or
-- start MySQL locally, or
-- confirm the connection string settings in `appsettings.json` and `.env`
-
-### 2. Frontend cannot reach backend
-Solution:
-- confirm backend is running on the expected port
-- verify Vite environment variables for API URL
-
-### 3. Smart contract service not responding
-Solution:
-- ensure the Node service is started
-- confirm the blockchain RPC and contract address are valid
-
----
-
-## 8. Final run summary
-
-### Fastest method
-```bash
-cd wirachain-docker-main/wirachain-docker-main
-docker compose up -d --build
-```
-
-### Manual method
-```bash
-# backend
-cd wirachain-backend-main/wirachain-backend-main
-dotnet restore
-dotnet run --urls http://localhost:5273
-
-# frontend
-cd wirachain-frontend-main/wirachain-frontend-main
-npm install
-npm run dev -- --host 0.0.0.0 --port 3000
-
-# blockchain service
-cd wirachain-smart-contract-deployment-main/wirachain-smart-contract-deployment-main
-npm install
-npm run dev
-```
-
----
-
-## 9. Important note for this environment
-
-This execution guide is written for a local machine with the required tools installed. In the current sandbox environment, Docker, .NET, and Node are not installed, so the app cannot be started here directly.
-
-The guide above is the correct setup path for Windows and Arch Linux machines.
+- Seeded accounts and private keys in the repository are development-only; rotate them before any shared deployment.
+- Do not expose staff-account creation endpoints publicly. Authorization hardening is still required.
+- The Docker group grants root-equivalent privileges.
+- Never commit `.env` files, private keys, real credentials, or patient data.
